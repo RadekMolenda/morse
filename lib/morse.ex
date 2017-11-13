@@ -1,6 +1,6 @@
 defmodule Morse do
   @moduledoc """
-  encodes, or obfuscates the morse code
+  encodes given string to morse code. Also obfuscate the morse code
   """
 
   @keys [
@@ -42,15 +42,6 @@ defmodule Morse do
     "0",
     ",",
     ".",
-    "?",
-    ";",
-    ":",
-    "/",
-    "-",
-    "'",
-    "(",
-    "_",
-    "@"
   ]
 
   @encoded_keys [
@@ -91,16 +82,7 @@ defmodule Morse do
     "----.",
     "-----",
     "--..--",
-    ".-.-.-",
-    "..--..",
-    "-.-.-",
-    "---...",
-    "-..-.",
-    "-....-",
-    ".----.",
-    "'-.--.-",
-    "..--.-",
-    ".--.-."
+    ".-.-.-"
   ]
 
   @to_morse Enum.zip(@keys, @encoded_keys) |> Enum.into(%{})
@@ -123,19 +105,36 @@ defmodule Morse do
       "../.-|--/..|-./-|.-.|---|..-|-...|.-..|./.----|..---"
   """
   def encode(""), do: ""
-  def encode(str) do
+  def encode(str), do: process(str, fn(x) -> x end)
+
+  @doc """
+  encodes the text to morse and obfuscates.
+
+  ## Examples
+
+      iex> Morse.obfuscate("")
+      ""
+      iex> Morse.obfuscate("I AM IN TROUBLE")
+      "2/1A|B/2|A1/A|1A1|C|2A|A3|1A2|1"
+  """
+  def obfuscate(""), do: ""
+  def obfuscate(str), do: process(str, &Obfuscate.encode/1)
+
+  defp process(str, fun) do
     str
     |> String.upcase
     |> String.split(" ")
-    |> Enum.map_join("/", &(encode_word(&1)))
+    |> Enum.map(&(encode_word(&1, fun)))
+    |> Enum.join("/")
   end
 
-  defp encode_word(word) do
+  defp encode_word(word, fun) do
     word
     |> String.split("", trim: true)
-    |> Enum.map(&(encode_char(&1)))
-    |> Enum.filter(&(present?(&1)))
+    |> Enum.map(&(&1 |> encode_char |> fun.()))
+    |> Enum.filter(&present?/1)
     |> Enum.join("|")
+
   end
 
   defp present?(""), do: false
