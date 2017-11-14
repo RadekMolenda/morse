@@ -21,15 +21,4 @@ defmodule Resourceguru do
   def flatten([h | t], acc) when is_list(h), do: flatten(t, flatten(h, acc))
   def flatten([h | t], acc), do: flatten(t, [h | acc])
   def flatten([], acc), do: acc
-
-  def main(args) do
-    args |> parse_args |> IO.puts
-  end
-
-  defp parse_args(args) do
-    {options, _, _} = OptionParser.parse(args,
-      switches: [foo: :string]
-    )
-    options
-  end
 end

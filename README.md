@@ -1,21 +1,22 @@
 # Resourceguru
 
-**TODO: Add description**
+**Simple cli for changing the text to obfuscated morse code**
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `resourceguru` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:resourceguru, "~> 0.1.0"}
-  ]
-end
+The app uses docker. You need to have docker and docker-compose installed to test the app. To build run:
+```
+$ docker-compose build
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/resourceguru](https://hexdocs.pm/resourceguru).
+## Usage
 
+```
+$ docker-compose run --rm app ./resourceguru --in in-file --out out-file
+```
+
+## Testing
+
+```
+$ docker-compose run --rm app mix test
+```

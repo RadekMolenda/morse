@@ -1,7 +1,8 @@
 defmodule Obfuscate do
   @moduledoc """
-  obfuscates single morse code. Also obfuscate the morse code
+  obfuscates single morse code sign.
   """
+
   @doc """
   encodes the morse code sign.
 
@@ -13,7 +14,6 @@ defmodule Obfuscate do
     iex> Obfuscate.encode(".....")
     "5"
   """
-
   def encode(""), do: ""
   def encode("....." <> next), do: "5" <> encode(next)
   def encode("...." <> next), do: "4" <> encode(next)

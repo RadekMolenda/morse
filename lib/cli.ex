@@ -1,17 +1,8 @@
 defmodule Cli do
   def main(args) do
-    case args |> parse_args do
-      [in: in_file, out: out_file] ->
-        {:ok, out} = File.open out_file, [:write]
-        File.stream!(in_file)
-        |> Stream.map(&(String.replace(&1, "\n", "")))
-        |> Enum.each(fn(line) ->
-          IO.binwrite(out, Morse.obfuscate(line))
-          IO.binwrite(out, "\n")
-        end)
-
-      _ -> IO.puts "usage: ./resourceguru --in input_file --out output_file"
-    end
+    args
+    |> parse_args
+    |> process
   end
 
   defp parse_args(args) do
@@ -19,5 +10,26 @@ defmodule Cli do
       switches: [in: :string, out: :string]
     )
     options
+  end
+
+  defp process([in: in_file, out: out_file]) do
+    File.open(in_file, [:read])
+    |> encode_and_save(out_file)
+  end
+  defp process(_) do
+    IO.puts "Usage: ./resourceguru --in input_file --out output_file"
+  end
+
+  defp encode_and_save({:ok, file}, out_file) do
+    File.open(out_file, [:write], fn(out_f) ->
+      IO.stream(file, :line)
+      |> Enum.each(fn(line) ->
+        IO.binwrite(out_f, Morse.obfuscate(line))
+        IO.binwrite(out_f, "\n")
+      end)
+    end)
+  end
+  defp encode_and_save({:error, _}, _) do
+    IO.puts "input file must exist"
   end
 end
